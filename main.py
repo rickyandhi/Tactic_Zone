@@ -184,12 +184,12 @@ def main():
 
             # Save tracks and DataFrames to CSV files with unique names for each video
             output_suffix = f"_video_{video_index+1}"
-            save_tracks_to_csv(tracks, csv_path=f'output_files_computer_vision/tracks_csv{output_suffix}.csv')
-            df.to_csv(f'output_files_computer_vision/player_statistics{output_suffix}.csv', index=True)
-            team_df.to_csv(f'output_files_computer_vision/team_statistics{output_suffix}.csv', index=True)
-            team_1_df.to_csv(f'output_files_computer_vision/team_1_player_statistics{output_suffix}.csv', index=True)
-            team_2_df.to_csv(f'output_files_computer_vision/team_2_player_statistics{output_suffix}.csv', index=True)
-            final_df.to_csv(f'output_files_computer_vision/teams_final_statistics{output_suffix}.csv', index=True)
+            save_tracks_to_csv(tracks, csv_path=f'/content/Tactic_Zone/output_files_computer_vision/tracks_csv{output_suffix}.csv')
+            df.to_csv(f'/content/Tactic_Zone/output_files_computer_vision/player_statistics{output_suffix}.csv', index=True)
+            team_df.to_csv(f'/content/Tactic_Zone/output_files_computer_vision/team_statistics{output_suffix}.csv', index=True)
+            team_1_df.to_csv(f'/content/Tactic_Zone/output_files_computer_vision/team_1_player_statistics{output_suffix}.csv', index=True)
+            team_2_df.to_csv(f'/content/Tactic_Zone/output_files_computer_vision/team_2_player_statistics{output_suffix}.csv', index=True)
+            final_df.to_csv(f'/content/Tactic_Zone/output_files_computer_vision/teams_final_statistics{output_suffix}.csv', index=True)
 
     """
 
@@ -207,23 +207,23 @@ def main():
 
     """
     # Load the teams data (you may need to adjust file paths)
-    teams1 = pd.read_csv('output_files_computer_vision/teams_final_statistics_video_1.csv')
+    teams1 = pd.read_csv('/content/Tactic_Zone/output_files_computer_vision/teams_final_statistics_video_1.csv')
     teams2 = pd.read_csv('output_files_computer_vision/teams_final_statistics_video_2.csv')
 
     # Combine teams1 and teams2 into a single DataFrame
     combined_teams = pd.concat([teams1, teams2], ignore_index=True)
 
     # Load the data
-    mobile_data1 = pd.read_csv('recommendation_systems_input_files/mobile_data.csv')
-    mobile_data2 = pd.read_csv('recommendation_systems_input_files/mobile_data_2.csv')
+    mobile_data1 = pd.read_csv('/content/Tactic_Zone/recommendation_systems_input_files/mobile_data.csv')
+    mobile_data2 = pd.read_csv('/content/Tactic_Zone/recommendation_systems_input_files/mobile_data_2.csv')
 
     correct_shirt_numbers = [str(num) for num in mobile_data1['Shirt_Number']]
     correct_shirt_numbers2 = [str(num) for num in mobile_data2['Shirt_Number']]
 
-    player_data1 = pd.read_csv('output_files_computer_vision/team_1_player_statistics_video_1.csv')
-    player_data2 = pd.read_csv('output_files_computer_vision/team_2_player_statistics_video_1.csv')
-    player_data3 = pd.read_csv('output_files_computer_vision/team_1_player_statistics_video_2.csv')
-    player_data4 = pd.read_csv('output_files_computer_vision/team_2_player_statistics_video_2.csv')
+    player_data1 = pd.read_csv('/content/Tactic_Zone/output_files_computer_vision/team_1_player_statistics_video_1.csv')
+    player_data2 = pd.read_csv('/content/Tactic_Zone/output_files_computer_vision/team_2_player_statistics_video_1.csv')
+    player_data3 = pd.read_csv('/content/Tactic_Zone/output_files_computer_vision/team_1_player_statistics_video_2.csv')
+    player_data4 = pd.read_csv('/content/Tactic_Zone/output_files_computer_vision/team_2_player_statistics_video_2.csv')
 
     player_data_dict = {
         'player_data1': player_data1,
@@ -256,7 +256,7 @@ def main():
     closest_player_data_mobile1['shirt_number'] = closest_player_data_mobile1['corrected_shirt_number']
     closest_player_data_mobile1.drop(columns=['corrected_shirt_number'], inplace=True)
 
-    closest_player_data_mobile1.to_csv('output_files_recommendation_systems/closest_player_data_mobile1.csv', index=False)
+    closest_player_data_mobile1.to_csv('/content/Tactic_Zone/output_files_recommendation_systems/closest_player_data_mobile1.csv', index=False)
 
     # Handle player data 3 and 4 based on mobile_data2
     closest_player_data_3_4 = []
@@ -276,7 +276,7 @@ def main():
     closest_player_data_mobile2['shirt_number'] = closest_player_data_mobile2['corrected_shirt_number']
     closest_player_data_mobile2.drop(columns=['corrected_shirt_number'], inplace=True)
 
-    closest_player_data_mobile2.to_csv('output_files_recommendation_systems/closest_player_data_mobile2.csv', index=False)
+    closest_player_data_mobile2.to_csv('/content/Tactic_Zone/output_files_recommendation_systems/closest_player_data_mobile2.csv', index=False)
 
     # From here on, use only closest_player_data_mobile1 in the rest of the code
 
@@ -289,12 +289,12 @@ def main():
 
     my_team = pd.DataFrame([closest_row_team1])
     opponent_team = pd.DataFrame([closest_row_team2])
-    my_team.to_csv('output_files_recommendation_systems/my_team.csv', index=False)
-    opponent_team.to_csv('output_files_recommendation_systems/opponent_team.csv', index=False)
+    my_team.to_csv('/content/Tactic_Zone/output_files_recommendation_systems/my_team.csv', index=False)
+    opponent_team.to_csv('/content/Tactic_Zone/output_files_recommendation_systems/opponent_team.csv', index=False)
 
     # Run the models
     teams = combined_closest_rows
-    data_cleaned = pd.read_csv('recommendation_systems_input_files/data_cleaned.csv')
+    data_cleaned = pd.read_csv('/content/Tactic_Zone/recommendation_systems_input_files/data_cleaned.csv')
 
     # Use the closest player data based on mobile data 1
     player_data = closest_player_data_mobile1
@@ -313,7 +313,7 @@ def main():
 
     # Save recommended formations to CSV
     recommended_formations = model1.find_winning_rows(similar_rows)
-    recommended_formations.to_csv('output_files_recommendation_systems/recommended_formations.csv', index=False)
+    recommended_formations.to_csv('/content/Tactic_Zone/output_files_recommendation_systems/recommended_formations.csv', index=False)
 
 
     # Select the first match data row
@@ -346,10 +346,10 @@ def main():
 
                 # Combine both selected players and substitutes into a single file
                 combined_team = pd.concat([selected_players, selected_substitutes], ignore_index=True)
-                combined_team.to_csv('output_files_recommendation_systems/combined_team.csv', index=False)
+                combined_team.to_csv('/content/Tactic_Zone/output_files_recommendation_systems/combined_team.csv', index=False)
         
             else:
-                selected_players.to_csv('output_files_recommendation_systems/combined_team.csv', index=False)
+                selected_players.to_csv('/content/Tactic_Zone/output_files_recommendation_systems/combined_team.csv', index=False)
         i += 1
     """
 
