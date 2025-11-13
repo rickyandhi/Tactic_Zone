@@ -42,7 +42,7 @@ def main():
     """
     # List of video file paths
     video_paths = [
-        'drive/MyDrive/soccergpt/videos/videoplayback.mp4'
+        '/content/drive/MyDrive/soccergpt/videos/videoplayback.mp4'
     ]
 
     # Loop through each video
@@ -50,7 +50,7 @@ def main():
         # Initialize DataFrames and persistent objects for each video
         df = initialize_dataframe()  # Initialize empty DataFrame for players
         team_df = initialize_team_df()  # Initialize empty DataFrame for teams
-        tracker = Tracker('drive/MyDrive/soccergpt/models/old_data.pt')  # Initialize tracker
+        tracker = Tracker('/content/drive/MyDrive/soccergpt/models/old_data.pt')  # Initialize tracker
         team_assigner = TeamAssigner()
         
         # Set batch size
@@ -131,7 +131,7 @@ def main():
 
             # YOLO Processor and Event Processing
             class_thresholds = {0: 0.8, 1: 0.7, 2: 0.3, 3: 0.1, 4: 0.7, 5: 0.6, 6: 0.85}
-            yolo_processor = YOLOVideoProcessor('drive/MyDrive/soccergpt/models/new_data.pt', class_thresholds)
+            yolo_processor = YOLOVideoProcessor('/content/drive/MyDrive/soccergpt/models/new_data.pt', class_thresholds)
             filtered_detections, detections_classes_2_and_3 = yolo_processor.process_frames_combined(video_frames)
             
             # Detect other events
@@ -148,7 +148,7 @@ def main():
 
             # Initialize OCR
             player_number_tracker = PlayerShirtNumberTracker(video_frames, tracks, df,
-                                           'drive/MyDrive/soccergpt/models/playershirt.pt')
+                                           '/content/drive/MyDrive/soccergpt/models/playershirt.pt')
 
             # OCR: Detect player shirt numbers and update DataFrame
             df = player_number_tracker.run()
@@ -160,7 +160,7 @@ def main():
             team_df = formation_detector.process_frames_in_batches()
             
             # Initialize SubstitutionDetector
-            detector = SubstitutionDetector(class_thresholds, 'drive/MyDrive/soccergpt/models/Substitution.pt', team_df)
+            detector = SubstitutionDetector(class_thresholds, '/content/drive/MyDrive/soccergpt/models/Substitution.pt', team_df)
             # Run the extraction process
             ocr_results, team_df = detector.extract_annotation(video_frames, filtered_detections, tracks)
             
@@ -433,5 +433,5 @@ def main():
     else:
         print("Failed to retrieve valid JSON for training suggestions.")
 
-#if __name__ == '__main__':
-#    main()
+if __name__ == '__main__':
+    main()
