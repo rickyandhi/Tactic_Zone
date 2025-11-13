@@ -366,7 +366,7 @@ def main():
 
     """
     # Set the environment variable in the current notebook session
-    os.environ["GEMINI_API_KEY"] = "AIzaSyBv4nX97Do78jNAM0Kl5_DFE96qWsBfgbM"
+    os.environ["GEMINI_API_KEY"] = "YOUR_GEMINI_API_KEY"
 
     opponent_info = pd.read_csv(r'output_files_recommendation_systems/opponent_team.csv')
     opponent_info_str = opponent_info.to_string(index=False)
