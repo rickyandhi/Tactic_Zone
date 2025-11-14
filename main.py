@@ -58,7 +58,7 @@ def main():
         # Get total number of frames in the video
         total_frames = int(video_reader.get(cv2.CAP_PROP_FRAME_COUNT))
         fps = video_reader.get(cv2.CAP_PROP_FPS)
-        total_seconds = total_frames / fps
+        total_seconds = int(total_frames / fps)
 
         # Define possible formations
         possible_formations = ['4-3-3', '4-2-3-1', '4-3-2-1', '4-1-4-1', '3-5-2', '3-4-1-2', 
