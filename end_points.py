@@ -1,4 +1,4 @@
-from utils import install_requirements, download_models
+from utils import download_models
 import os
 def requirements_installed():
     # Check if a requirements marker file exists (or use any package check mechanism)
@@ -11,7 +11,6 @@ def models_downloaded():
 
 # Install requirements only if they haven't been installed yet
 if not requirements_installed():
-    install_requirements('requirements.txt')
     # Create a flag file to indicate that requirements have been installed
     with open('requirements_installed.flag', 'w') as f:
         f.write("Installed")
