@@ -208,10 +208,9 @@ def main():
     """
     # Load the teams data (you may need to adjust file paths)
     teams1 = pd.read_csv('/content/Tactic_Zone/output_files_computer_vision/teams_final_statistics_video_1.csv')
-    teams2 = pd.read_csv('/content/Tactic_Zone/output_files_computer_vision/teams_final_statistics_video_2.csv')
 
     # Combine teams1 and teams2 into a single DataFrame
-    combined_teams = pd.concat([teams1, teams2], ignore_index=True)
+    combined_teams = pd.concat([teams1], ignore_index=True)
 
     # Load the data
     mobile_data1 = pd.read_csv('/content/Tactic_Zone/recommendation_systems_input_files/mobile_data.csv')
@@ -222,14 +221,10 @@ def main():
 
     player_data1 = pd.read_csv('/content/Tactic_Zone/output_files_computer_vision/team_1_player_statistics_video_1.csv')
     player_data2 = pd.read_csv('/content/Tactic_Zone/output_files_computer_vision/team_2_player_statistics_video_1.csv')
-    player_data3 = pd.read_csv('/content/Tactic_Zone/output_files_computer_vision/team_1_player_statistics_video_2.csv')
-    player_data4 = pd.read_csv('/content/Tactic_Zone/output_files_computer_vision/team_2_player_statistics_video_2.csv')
 
     player_data_dict = {
         'player_data1': player_data1,
-        'player_data2': player_data2,
-        'player_data3': player_data3,
-        'player_data4': player_data4,
+        'player_data2': player_data2
     }
 
     # Extract the first team's color from mobile_data1
@@ -364,24 +359,24 @@ def main():
 
     """
     # Set the environment variable in the current notebook session
-    os.environ["GEMINI_API_KEY"] = "AIzaSyBv4nX97Do78jNAM0Kl5_DFE96qWsBfgbM"
+    os.environ["GEMINI_API_KEY"] = ""
 
-    opponent_info = pd.read_csv(r'output_files_recommendation_systems/opponent_team.csv')
+    opponent_info = pd.read_csv('/content/Tactic_Zone/output_files_recommendation_systems/opponent_team.csv')
     opponent_info_str = opponent_info.to_string(index=False)
 
-    opponent_players = pd.read_csv(r'output_files_recommendation_systems/closest_player_data_mobile2.csv')
+    opponent_players = pd.read_csv('/content/Tactic_Zone/output_files_recommendation_systems/closest_player_data_mobile2.csv')
     opponent_players_str = opponent_players.to_string(index=False)
 
-    my_team_info = pd.read_csv(r'output_files_recommendation_systems/my_team.csv')
+    my_team_info = pd.read_csv('/content/Tactic_Zone/output_files_recommendation_systems/my_team.csv')
     my_team_info_str = my_team_info.to_string(index=False)
 
-    my_team_players = pd.read_csv(r'output_files_recommendation_systems/closest_player_data_mobile1.csv')
+    my_team_players = pd.read_csv('/content/Tactic_Zone/output_files_recommendation_systems/closest_player_data_mobile1.csv')
     my_team_players_str = my_team_players.to_string(index=False)
 
-    best_formations = pd.read_csv(r'output_files_recommendation_systems/recommended_formations.csv')
+    best_formations = pd.read_csv('/content/Tactic_Zone/output_files_recommendation_systems/recommended_formations.csv')
     best_formations_str = best_formations.to_string(index = False)
 
-    match_players_recommendations = pd.read_csv(r'output_files_recommendation_systems/combined_team.csv')
+    match_players_recommendations = pd.read_csv('/content/Tactic_Zone/output_files_recommendation_systems/combined_team.csv')
     match_players_recommendations_str = match_players_recommendations.to_string(index = False)
 
     # Configure the Gemini API key
