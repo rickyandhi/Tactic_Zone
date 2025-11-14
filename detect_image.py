@@ -59,8 +59,8 @@ def draw_boxes_on_image(image_path, model_path, output_path='output_image.jpg'):
 
 if __name__ == '__main__':
     # Configuration
-    IMAGE_PATH = 'input_image.jpg'  # Change this to your image path
+    IMAGE_PATH = '/content/drive/MyDrive/soccergpt/images/input_image.jpg'  # Change this to your image path
     MODEL_PATH = '/content/drive/MyDrive/soccergpt/models/old_data.pt'  # Change this to your model path
-    OUTPUT_PATH = 'output_with_boxes.jpg'
+    OUTPUT_PATH = '/content/drive/MyDrive/soccergpt/output_images/output_with_boxes.jpg'
     
     draw_boxes_on_image(IMAGE_PATH, MODEL_PATH, OUTPUT_PATH)
