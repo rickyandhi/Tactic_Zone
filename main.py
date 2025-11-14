@@ -42,7 +42,7 @@ def main():
     """
     # List of video file paths
     video_paths = [
-        '/content/drive/MyDrive/soccergpt/videos/fooball2.webm'
+        '/content/drive/MyDrive/soccergpt/videos/football1.mp4'
     ]
 
     # Loop through each video
