@@ -5,7 +5,7 @@ import os
 import google.generativeai as genai
 import json
 
-from utils import initialize_dataframe, initialize_team_df, read_video_in_batches, save_tracks_to_csv, install_requirements
+from utils import initialize_dataframe, initialize_team_df, read_video_in_batches, read_video_from_each_second, save_tracks_to_csv, install_requirements
 from trackers import Tracker
 from team_assigner import TeamAssigner
 from camera_movement_estimator import CameraMovementEstimator
@@ -42,7 +42,7 @@ def main():
     """
     # List of video file paths
     video_paths = [
-        '/content/drive/MyDrive/soccergpt/videos/football2.webm'
+        '/content/drive/MyDrive/soccergpt/videos/football4.webm'
     ]
 
     # Loop through each video
@@ -53,12 +53,12 @@ def main():
         tracker = Tracker('/content/drive/MyDrive/soccergpt/models/old_data.pt')  # Initialize tracker
         team_assigner = TeamAssigner()
         
-        # Set batch size
-        batch_size = 200
         video_reader = cv2.VideoCapture(video_path)
 
         # Get total number of frames in the video
         total_frames = int(video_reader.get(cv2.CAP_PROP_FRAME_COUNT))
+        fps = video_reader.get(cv2.CAP_PROP_FPS)
+        total_seconds = total_frames / fps
 
         # Define possible formations
         possible_formations = ['4-3-3', '4-2-3-1', '4-3-2-1', '4-1-4-1', '3-5-2', '3-4-1-2', 
@@ -67,10 +67,10 @@ def main():
                                '5-3-2', '3-3-3-1', '4-2-4']
         i = 0
         # Loop through the video, processing batch_size frames at a time
-        for start_frame in range(0, total_frames, batch_size):
+        for second in range(1, total_seconds + 1):
             i += 1
             # Read a batch of frames
-            video_frames = read_video_in_batches(video_reader, start_frame, batch_size)
+            video_frames = read_video_from_each_second(video_reader, second)
 
             # If no frames were read, break the loop
             if len(video_frames) == 0:

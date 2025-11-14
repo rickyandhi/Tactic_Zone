@@ -113,9 +113,23 @@ def read_video_in_batches(video_reader, start_frame, batch_size):
     
     return frames
 
-# Function to install libraries from a given requirements.txt file path
-def install_requirements(file_path):
-    subprocess.check_call([sys.executable, "-m", "pip", "install", "-r", file_path])
+def read_video_from_each_second(video_reader, second):
+    frames = []
+
+    offsets = [0, 0.25, 0.5, 0.75]
+
+    for o in offsets:
+        
+        timestamp = (second + o) * 1000  # ms
+        video_reader.set(cv2.CAP_PROP_POS_MSEC, timestamp)
+        ret, frame = video_reader.read()
+        
+        if not ret:
+            continue
+        
+        frames.append(frame)
+
+    return frames
 
 def download_models():
     subprocess.run(["sed", "-i", "s/\r$//", "download_models.sh"])
