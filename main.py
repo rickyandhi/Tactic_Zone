@@ -5,7 +5,7 @@ import os
 import google.generativeai as genai
 import json
 
-from utils import initialize_dataframe, initialize_team_df, read_video_in_batches, read_video_from_each_second, save_tracks_to_csv, install_requirements
+from utils import initialize_dataframe, initialize_team_df, read_video_in_batches, read_video_from_each_second, save_tracks_to_csv
 from trackers import Tracker
 from team_assigner import TeamAssigner
 from camera_movement_estimator import CameraMovementEstimator
@@ -52,7 +52,7 @@ def main():
         team_df = initialize_team_df()  # Initialize empty DataFrame for teams
         tracker = Tracker('/content/drive/MyDrive/soccergpt/models/old_data.pt')  # Initialize tracker
         team_assigner = TeamAssigner()
-        
+
         video_reader = cv2.VideoCapture(video_path)
 
         # Get total number of frames in the video
