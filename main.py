@@ -208,7 +208,7 @@ def main():
     """
     # Load the teams data (you may need to adjust file paths)
     teams1 = pd.read_csv('/content/Tactic_Zone/output_files_computer_vision/teams_final_statistics_video_1.csv')
-    teams2 = pd.read_csv('output_files_computer_vision/teams_final_statistics_video_2.csv')
+    teams2 = pd.read_csv('/content/Tactic_Zone/output_files_computer_vision/teams_final_statistics_video_2.csv')
 
     # Combine teams1 and teams2 into a single DataFrame
     combined_teams = pd.concat([teams1, teams2], ignore_index=True)
