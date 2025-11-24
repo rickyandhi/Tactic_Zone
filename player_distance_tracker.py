@@ -97,7 +97,7 @@ def calculate_distances(tracks, frame_num):
 def main():
     # --- Configuration ---
     # Update this path to your video file
-    video_path = '/content/drive/MyDrive/soccergpt/videos/football2.webm' 
+    video_path = '/content/drive/MyDrive/soccergpt/videos/football4.webm' 
     model_path = '/content/drive/MyDrive/soccergpt/models/old_data.pt'
     output_csv_path = '/content/drive/MyDrive/soccergpt/result/v1/player_distances.csv'
     batch_size = 200
