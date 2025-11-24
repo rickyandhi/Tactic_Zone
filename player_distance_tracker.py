@@ -3,6 +3,7 @@ import numpy as np
 import pandas as pd
 import os
 import json
+import boto3
 
 from utils import read_video_in_batches
 from trackers import Tracker
@@ -102,6 +103,13 @@ def main():
     model_path = '/content/drive/MyDrive/soccergpt/models/old_data.pt'
     output_csv_path = '/content/drive/MyDrive/soccergpt/result/v1/player_distances.csv'
     batch_size = 200
+    
+    # S3 Configuration
+    s3_bucket_name = 'your-bucket-name'
+    s3_region = 'us-east-1'
+    s3_access_key = 'your-access-key'
+    s3_secret_key = 'your-secret-key'
+    s3_endpoint = None # e.g., 'https://nyc3.digitaloceanspaces.com'
     # ---------------------
 
     if not os.path.exists(video_path):
@@ -133,6 +141,20 @@ def main():
         frame_interval = 1 # Fallback if fps is very low
     
     all_distance_data = []
+
+    # Initialize S3
+    try:
+        s3_client = boto3.client(
+            's3',
+            region_name=s3_region,
+            endpoint_url=s3_endpoint,
+            aws_access_key_id=s3_access_key,
+            aws_secret_access_key=s3_secret_key
+        )
+        print("S3 client initialized.")
+    except Exception as e:
+        print(f"Warning: S3 client failed to initialize: {e}")
+        s3_client = None
     
     print(f"Processing {total_frames} frames...")
     print(f"Video FPS: {fps}. Sampling every {frame_interval} frames (approx {target_fps} FPS).")
@@ -143,6 +165,36 @@ def main():
         
         if len(video_frames) == 0:
             break
+
+        # Upload frames to S3
+        batch_frame_urls = {}
+        if s3_client:
+            # print(f"Uploading {len(video_frames)} frames to S3...")
+            for i, frame in enumerate(video_frames):
+                abs_frame_num = start_frame + i
+                try:
+                    ret_enc, buffer = cv2.imencode('.jpg', frame)
+                    if ret_enc:
+                        key = f"frames/frame_{abs_frame_num:06d}.jpg"
+                        s3_client.put_object(
+                            Bucket=s3_bucket_name,
+                            Key=key,
+                            Body=buffer.tobytes(),
+                            ContentType='image/jpeg'
+                        )
+                        
+                        # Construct URL
+                        if s3_endpoint:
+                             # Assuming endpoint includes protocol, e.g., https://nyc3.digitaloceanspaces.com
+                             url = f"{s3_endpoint}/{s3_bucket_name}/{key}"
+                        else:
+                             # Default AWS S3 URL structure
+                             url = f"https://{s3_bucket_name}.s3.amazonaws.com/{key}"
+                        
+                        batch_frame_urls[i] = url
+                        
+                except Exception as e:
+                    print(f"Failed to upload frame {abs_frame_num}: {e}")
 
         # 1. Tracking
         tracks = tracker.get_object_tracks(video_frames)
@@ -179,6 +231,7 @@ def main():
                 # Update frame number to absolute
                 for d in distances:
                     d['frame'] = abs_frame_num
+                    d['frame_url'] = batch_frame_urls.get(frame_idx, "")
                 
                 all_distance_data.extend(distances)
 
