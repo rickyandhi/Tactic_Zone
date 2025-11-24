@@ -26,6 +26,7 @@ def calculate_distances(tracks, frame_num):
     # If not available, fall back to standard position (pixels) but prefer transformed
     valid_players = {}
     for p_id, p_data in players_in_frame.items():
+        p_id = int(p_id)
         if 'position_transformed' in p_data:
             valid_players[p_id] = {
                 'pos': np.array(p_data['position_transformed']),
