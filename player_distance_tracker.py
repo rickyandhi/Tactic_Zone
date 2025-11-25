@@ -10,6 +10,7 @@ from trackers import Tracker
 from team_assigner import TeamAssigner
 from camera_movement_estimator import CameraMovementEstimator
 from view_transformer import ViewTransformer
+from google.colab import userdata
 
 def calculate_distances(tracks, frame_num):
     """
@@ -108,11 +109,18 @@ def main():
     batch_size = 200
     
     # S3 Configuration
-    s3_bucket_name = os.environ.get('S3_BUCKET_NAME')
-    s3_region = os.environ.get('S3_REGION')
-    s3_access_key = os.environ.get('S3_ACCESS_KEY')
-    s3_secret_key = os.environ.get('S3_SECRET_KEY')
-    s3_endpoint = os.environ.get('S3_ENDPOINT') # e.g., 'https://nyc3.digitaloceanspaces.com'
+    try:
+        s3_bucket_name = userdata.get('S3_BUCKET_NAME')
+        s3_region = userdata.get('S3_REGION')
+        s3_access_key = userdata.get('S3_ACCESS_KEY')
+        s3_secret_key = userdata.get('S3_SECRET_KEY')
+        s3_endpoint = userdata.get('S3_ENDPOINT')
+    except ImportError:
+        s3_bucket_name = os.environ.get('S3_BUCKET_NAME')
+        s3_region = os.environ.get('S3_REGION')
+        s3_access_key = os.environ.get('S3_ACCESS_KEY')
+        s3_secret_key = os.environ.get('S3_SECRET_KEY')
+        s3_endpoint = os.environ.get('S3_ENDPOINT') # e.g., 'https://nyc3.digitaloceanspaces.com'
     # ---------------------
 
     if not os.path.exists(video_path):
