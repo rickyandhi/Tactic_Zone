@@ -32,14 +32,16 @@ def calculate_distances(tracks, frame_num):
             valid_players[p_id] = {
                 'pos': np.array(p_data['position_transformed']),
                 'team': p_data.get('team', -1),
-                'team_color': p_data.get('team_color', None)
+                'team_color': p_data.get('team_color', None),
+                'profile_image_url': p_data.get('profile_image_url', '')
             }
         elif 'position' in p_data:
              # Fallback to pixel position if transformation failed, but note unit difference
              valid_players[p_id] = {
                 'pos': np.array(p_data['position']),
                 'team': p_data.get('team', -1),
-                'team_color': p_data.get('team_color', None)
+                'team_color': p_data.get('team_color', None),
+                'profile_image_url': p_data.get('profile_image_url', '')
             }
 
     for p_id, p_info in valid_players.items():
@@ -90,6 +92,7 @@ def calculate_distances(tracks, frame_num):
             'team': current_team,
             'position_x': float(current_pos[0]),
             'position_y': float(current_pos[1]),
+            'player_profile_url': valid_players[p_id].get('profile_image_url', ''),
             'teammate_data': json.dumps(teammate_distances),
             'opponent_data': json.dumps(opponent_distances)
         })
@@ -105,11 +108,11 @@ def main():
     batch_size = 200
     
     # S3 Configuration
-    s3_bucket_name = 'your-bucket-name'
-    s3_region = 'us-east-1'
-    s3_access_key = 'your-access-key'
-    s3_secret_key = 'your-secret-key'
-    s3_endpoint = None # e.g., 'https://nyc3.digitaloceanspaces.com'
+    s3_bucket_name = os.environ.get('S3_BUCKET_NAME')
+    s3_region = os.environ.get('S3_REGION')
+    s3_access_key = os.environ.get('S3_ACCESS_KEY')
+    s3_secret_key = os.environ.get('S3_SECRET_KEY')
+    s3_endpoint = os.environ.get('S3_ENDPOINT') # e.g., 'https://nyc3.digitaloceanspaces.com'
     # ---------------------
 
     if not os.path.exists(video_path):
@@ -227,6 +230,43 @@ def main():
             abs_frame_num = start_frame + frame_idx
             
             if abs_frame_num % frame_interval == 0:
+                # Crop and upload player images for this frame
+                if s3_client:
+                    current_frame_img = video_frames[frame_idx]
+                    players_in_frame = tracks['players'][frame_idx]
+                    
+                    for p_id, p_data in players_in_frame.items():
+                        if 'bbox' in p_data:
+                            bbox = p_data['bbox']
+                            x1, y1, x2, y2 = map(int, bbox)
+                            h, w, _ = current_frame_img.shape
+                            x1 = max(0, x1)
+                            y1 = max(0, y1)
+                            x2 = min(w, x2)
+                            y2 = min(h, y2)
+                            
+                            if x2 > x1 and y2 > y1:
+                                crop = current_frame_img[y1:y2, x1:x2]
+                                try:
+                                    ret_enc, buffer = cv2.imencode('.jpg', crop)
+                                    if ret_enc:
+                                        key = f"crops/frame_{abs_frame_num:06d}_player_{p_id}.jpg"
+                                        s3_client.put_object(
+                                            Bucket=s3_bucket_name,
+                                            Key=key,
+                                            Body=buffer.tobytes(),
+                                            ContentType='image/jpeg'
+                                        )
+                                        
+                                        if s3_endpoint:
+                                             url = f"{s3_endpoint}/{s3_bucket_name}/{key}"
+                                        else:
+                                             url = f"https://{s3_bucket_name}.s3.amazonaws.com/{key}"
+                                        
+                                        p_data['profile_image_url'] = url
+                                except Exception as e:
+                                    print(f"Failed to upload crop for player {p_id} frame {abs_frame_num}: {e}")
+
                 distances = calculate_distances(tracks, frame_idx)
                 # Update frame number to absolute
                 for d in distances:
