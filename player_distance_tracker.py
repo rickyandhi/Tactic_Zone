@@ -4,8 +4,10 @@ import pandas as pd
 import os
 import json
 import boto3
+from botocore.config import Config
 
 from utils import read_video_in_batches
+
 from trackers import Tracker
 from team_assigner import TeamAssigner
 from camera_movement_estimator import CameraMovementEstimator
@@ -148,12 +150,19 @@ def main():
 
     # Initialize S3
     try:
+        print(f"Debug: S3 Config - Bucket: {s3_bucket_name}, Region: {s3_region}, Endpoint: {s3_endpoint}")
+        if s3_access_key:
+             print(f"Debug: Access Key: {s3_access_key[:4]}...")
+        else:
+             print("Debug: Access Key is None")
+
         s3_client = boto3.client(
             's3',
             region_name=s3_region,
             endpoint_url=s3_endpoint,
             aws_access_key_id=s3_access_key,
-            aws_secret_access_key=s3_secret_key
+            aws_secret_access_key=s3_secret_key,
+            config=Config(signature_version='s3v4')
         )
         print("S3 client initialized.")
     except Exception as e:
