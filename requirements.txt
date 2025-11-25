@@ -14,3 +14,4 @@ pyngrok
 gdown
 pyshorteners
 firebase_admin
+boto3
