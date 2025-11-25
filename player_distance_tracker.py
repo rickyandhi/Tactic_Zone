@@ -266,11 +266,7 @@ def main():
                                             ContentType='image/jpeg'
                                         )
                                         
-                                        if s3_endpoint:
-                                             url = f"{s3_endpoint}/{s3_bucket_name}/{key}"
-                                        else:
-                                             url = f"https://{s3_bucket_name}.s3.amazonaws.com/{key}"
-                                        
+                                        url = f"{s3_endpoint}/{s3_bucket_name}/{key}"
                                         p_data['profile_image_url'] = url
                                 except Exception as e:
                                     print(f"Failed to upload crop for player {p_id} frame {abs_frame_num}: {e}")
