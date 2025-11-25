@@ -141,7 +141,7 @@ def main():
     video_reader = cv2.VideoCapture(video_path)
     fps = video_reader.get(cv2.CAP_PROP_FPS)
     total_frames = int(video_reader.get(cv2.CAP_PROP_FRAME_COUNT))
-    target_fps = 4
+    target_fps = 1  # Process 1 frame per second
     frame_interval = int(fps / target_fps)
     if frame_interval == 0:
         frame_interval = 1 # Fallback if fps is very low
