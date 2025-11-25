@@ -10,7 +10,6 @@ from trackers import Tracker
 from team_assigner import TeamAssigner
 from camera_movement_estimator import CameraMovementEstimator
 from view_transformer import ViewTransformer
-from google.colab import userdata
 
 def calculate_distances(tracks, frame_num):
     """
@@ -110,6 +109,7 @@ def main():
     
     # S3 Configuration
     try:
+        from google.colab import userdata
         s3_bucket_name = userdata.get('S3_BUCKET_NAME')
         s3_region = userdata.get('S3_REGION')
         s3_access_key = userdata.get('S3_ACCESS_KEY')
