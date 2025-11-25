@@ -189,29 +189,31 @@ def main():
             # print(f"Uploading {len(video_frames)} frames to S3...")
             for i, frame in enumerate(video_frames):
                 abs_frame_num = start_frame + i
-                try:
-                    ret_enc, buffer = cv2.imencode('.jpg', frame)
-                    if ret_enc:
-                        key = f"frames/frame_{abs_frame_num:06d}.jpg"
-                        s3_client.put_object(
-                            Bucket=s3_bucket_name,
-                            Key=key,
-                            Body=buffer.tobytes(),
-                            ContentType='image/jpeg'
-                        )
-                        
-                        # Construct URL
-                        if s3_endpoint:
-                             # Assuming endpoint includes protocol, e.g., https://nyc3.digitaloceanspaces.com
-                             url = f"{s3_endpoint}/{s3_bucket_name}/{key}"
-                        else:
-                             # Default AWS S3 URL structure
-                             url = f"https://{s3_bucket_name}.s3.amazonaws.com/{key}"
-                        
-                        batch_frame_urls[i] = url
-                        
-                except Exception as e:
-                    print(f"Failed to upload frame {abs_frame_num}: {e}")
+                # Only upload frames that will be analyzed
+                if abs_frame_num % frame_interval == 0:
+                    try:
+                        ret_enc, buffer = cv2.imencode('.jpg', frame)
+                        if ret_enc:
+                            key = f"frames/frame_{abs_frame_num:06d}.jpg"
+                            s3_client.put_object(
+                                Bucket=s3_bucket_name,
+                                Key=key,
+                                Body=buffer.tobytes(),
+                                ContentType='image/jpeg'
+                            )
+                            
+                            # Construct URL
+                            if s3_endpoint:
+                                 # Assuming endpoint includes protocol, e.g., https://nyc3.digitaloceanspaces.com
+                                 url = f"{s3_endpoint}/{s3_bucket_name}/{key}"
+                            else:
+                                 # Default AWS S3 URL structure
+                                 url = f"https://{s3_bucket_name}.s3.amazonaws.com/{key}"
+                            
+                            batch_frame_urls[i] = url
+                            
+                    except Exception as e:
+                        print(f"Failed to upload frame {abs_frame_num}: {e}")
 
         # 1. Tracking
         tracks = tracker.get_object_tracks(video_frames)
