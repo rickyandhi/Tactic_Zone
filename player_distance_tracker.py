@@ -162,7 +162,11 @@ def main():
             endpoint_url=s3_endpoint,
             aws_access_key_id=s3_access_key,
             aws_secret_access_key=s3_secret_key,
-            config=Config(signature_version='s3v4')
+            config=Config(
+                signature_version='s3v4',
+                request_checksum_calculation="when_required",
+                response_checksum_validation="when_required",
+            )
         )
         print("S3 client initialized.")
     except Exception as e:
